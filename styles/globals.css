@@ -14,3 +14,25 @@ a {
 * {
   box-sizing: border-box;
 }
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(180, 180, 180);
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: rgb(180, 180, 180);
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: rgb(180, 180, 180);
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
