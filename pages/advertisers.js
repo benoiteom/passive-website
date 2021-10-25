@@ -1,9 +1,140 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../styles/Home.module.css'
-import adStyles from '../styles/Advertisers.module.css'
+import adsStyles from '../styles/Advertisers.module.css'
+import mStyles from '../styles/Modal.module.css'
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import React from 'react';
+import { withRouter } from 'next/router'
+import { firebaseApp, db } from '../firebase';
+import { Modal } from 'react-bootstrap';
 
-export default function Advertisers() {
+class Advertisers extends React.Component {
+
+	constructor() {
+		super();
+		this.state = {
+			showPopup: false,
+			errorMessage: ""
+		}
+
+		this.submitModal = this.submitModal.bind(this);
+		this.switchToSignIn = this.switchToSignIn.bind(this);
+		this.switchToSignUp = this.switchToSignUp.bind(this);
+	}
+
+	signUp(email) {
+		let filtered_email = email.split('.').join('').split('#').join('').split('$').join('').split('[').join('').split(']').join('');
+		if (email != "" && email != null) {
+			var date = new Date();
+			set(ref(db, 'emails/' + filtered_email), {
+				email: email,
+				date: date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " @ " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+			});
+			document.getElementById("header_button").style.opacity = 0;
+			document.getElementById("signup").style.opacity = 0;
+			document.getElementById("signup_thanks").style.opacity = 1;
+		}
+	}
+
+    contact(email, message) {
+		let filtered_email = email.split('.').join('').split('#').join('').split('$').join('').split('[').join('').split(']').join('');
+		if (email != "" && email != null) {
+			set(ref(db, 'contacts/' + filtered_email), {
+				email: email,
+				message: message
+			});
+			document.getElementById("send_button").innerHTML = "Thanks!";
+			document.getElementById("send_button").disabled = true;
+		}
+	}
+
+	submitModal() {
+		const email = document.getElementById("email").value;
+		const password = document.getElementById("password").value;
+		const company = document.getElementById("company").value;
+		const link = document.getElementById("link").value;
+		const auth = getAuth();
+		if (document.getElementById("modal_signup").style.display == "block") {
+			createUserWithEmailAndPassword(auth, email, password)
+			.then((userCredential) => {
+
+				var user = userCredential.user;
+				
+				updateProfile(auth.currentUser, {
+					displayName: company, photoURL: link
+				}).then(() => {
+
+					localStorage.setItem("name", user.displayName);
+					localStorage.setItem("email", user.email);
+					// sendEmailVerification(auth.currentUser)
+					// .then(() => {
+					// 	alert('Please confirm your email')
+					// });
+
+				}).catch((error) => {
+					console.log("Error setting name and link")
+				});
+			
+			})
+			.catch((error) => {
+				if (error.code == "auth/invalid-email") {
+					this.setState({ errorMessage: "Invalid email"});
+					console.log("ERROR: " + error);
+				} else if (error.code == "auth/email-already-in-use") {
+					this.setState({ errorMessage: "Email already in use"});
+					console.log("ERROR: " + error);
+				} else {
+					this.setState({ errorMessage: "Unkown error, please try again"});
+					console.log("ERROR: " + error);
+				}
+			});
+		} else {
+			signInWithEmailAndPassword(auth, email, password)
+			.then((userCredential) => {
+				// Signed in 
+				const user = userCredential.user;
+				console.log(user.displayName);
+				console.log(user.email);
+				localStorage.setItem('name', user.displayName);
+				localStorage.setItem('email', user.email);
+				this.props.router.push({pathname: '/advertiser', query: { id: userCredential.user.uid }});
+			})
+			.catch((error) => {
+				if (error.code == "auth/invalid-email") {
+					this.setState({ errorMessage: "Invalid email"});
+					console.log("ERROR: " + error);
+				} else if (error.code == "auth/wrong-password") {
+					this.setState({ errorMessage: "Incorrect password"});
+					console.log("ERROR: " + error);
+				} else if (error.code == "auth/too-many-requests") {
+					this.setState({ errorMessage: "Too many failed attempts, please try again later or reset your password"});
+					console.log("ERROR: " + error);
+				} else if (error.code == "auth/user-not-found") {
+					this.setState({ errorMessage: "User not found"});
+					console.log("ERROR: " + error);
+				} else {
+					this.setState({ errorMessage: "Unknown error, please try again"});
+					console.log("ERROR: " + error);
+				}
+			});
+		}
+	}
+
+	switchToSignIn() {
+		document.getElementById("hr_underline").style.marginLeft = "0%";
+		document.getElementById("modal_signup").style.display = "none";
+		this.setState({ errorMessage: "" });
+	}
+
+	switchToSignUp() {
+		document.getElementById("hr_underline").style.marginLeft = "50%";
+		document.getElementById("modal_signup").style.display = "block";
+		this.setState({ errorMessage: "" });
+	}
+
+	render() {
   	return (
 		<div>
 			<Head>
@@ -20,21 +151,101 @@ export default function Advertisers() {
 					<img src="/passive.png" />
 				</div>
 
-				<div className={adStyles.header}>
+				<div className={adsStyles.header}>
 					<Link href="/">
 					    <h1>Passive</h1>
                     </Link>
+					<p onClick={() => this.setState({showPopup: !this.state.showPopup})}>Sign in<span id={adsStyles.signup}> / Sign up</span></p>
 				</div>
 
-                <div className={adStyles.comingsoon}>
-                    <p>Coming Soon... 👀</p>
-                </div>
+				<div className={adsStyles.advertisers}>
+					<h1>Advertisers</h1>
+					<p>Combining modern technology and new ideas to offer unmatched value for your investment</p>
+					<div className={adsStyles.darkblock}>
+						<h3><em>Ads that</em> <span>Target & Retarget</span></h3>
+						<div>
+							<h4>AI Powered</h4>
+							<p>Our powerful AI algorithm analyzes anonymous user data and assists with targeting</p>
+						</div>
+						<div>
+							<h4>Multiple factors</h4>
+							<p>We use data such as user metrics, time of day, user interaction history, and much more to fine tune what is shown</p>
+						</div>
+					</div>
+					<div className={adsStyles.lightblock}>
+						<h3><em>Ads with</em> <span>24/7 Visibility</span></h3>
+						<div>
+							<h4>Exposure</h4>
+							<p>Increase brand awareness exponentially as users continue to be shown and re-shown your ads</p>
+						</div>
+						<div>
+							<h4>All hours</h4>
+							<p>Ads are shown to users any time they check their phone, not just when on the web or social media</p>
+						</div>
+					</div>
+					<div className={adsStyles.darkblock}>
+						<h3><em>Ads that</em> <span>Pay you back</span></h3>
+						<div>
+							<h4>Cashout</h4>
+							<p>Our cashout options are limited to products of companies that advertise with us, this can be in the form of gift cards or discount codes</p>
+						</div>
+						<div>
+							<h4>Paid Users</h4>
+							<p>Our users are compensated for seeing your ads. Combining this with our targeting makes for a great user experience</p>
+						</div>
+					</div>
+					<div className={adsStyles.lightblock}>
+						<h3><em>Ads with</em> <span>Analytics</span></h3>
+						<div>
+							<h4>Stats</h4>
+							<p>We provide you with statistics and anonymous user information to determine how well a campaign in working</p>
+						</div>
+						<div>
+							<h4>Adjust</h4>
+							<p>Create and remove ads on the fly based on how users are reacting to them</p>
+						</div>
+					</div>
+				</div>
+
+                {/* <div className={adsStyles.comingsoon}>
+                    <p onClick={() => this.setState({showPopup: !this.state.showPopup})}>Coming Soon... 👀</p>
+                </div> */}
 
 				<div className={styles.footer}>
                     <p>Contact us at passiveapp@gmail.com</p>
 				</div>
 				
 			</main>
+
+			<Modal show={this.state.showPopup} onHide={() => this.setState({ showPopup: false })}>
+				<Modal.Header closeButton style={{border: 'none'}}>
+					<Modal.Title style={{fontSize: '20px', lineHeight: '1.2', fontWeight: 'bold'}}>Advertiser Sign In</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<div className={mStyles.body}>
+						<p onClick={this.switchToSignIn}>Sign In</p>
+						<p onClick={this.switchToSignUp}>Sign Up</p>
+						<hr />
+						<hr id="hr_underline" />
+						<div><p style={{color: 'red', textAlign: 'center', fontSize: '14px', marginTop: '20px', marginBottom: 0}}>{this.state.errorMessage}</p></div>
+						<div className={mStyles.signin} id="signin">
+							<input type="text" placeholder="Email" id="email" />
+							<input type="password" placeholder="Password" id="password" />
+						</div>
+						<div className={mStyles.signin} id="modal_signup" style={{display: 'none'}}>
+							<input type="text" placeholder="Company" id="company" />
+							<input type="text" placeholder="Website (or other link)" id="link" />
+						</div>
+						<div className={mStyles.password}>
+							<p><b>Reset Password</b></p>
+						</div>
+						<button onClick={this.submitModal}>Submit</button>
+					</div>
+				</Modal.Body>
+			</Modal>
+
         </div>
-	)
+	)}
 }
+
+export default withRouter(Advertisers);

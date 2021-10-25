@@ -1,34 +1,45 @@
 import Head from 'next/head'
+import { withRouter } from 'next/router';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
-import { initializeApp } from '@firebase/app';
-import { getDatabase, ref, set } from "firebase/database";
+import { db } from '../firebase';
+import { ref, set } from "firebase/database";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { Modal } from 'react-bootstrap';
+import React from 'react';
 
-export default function Home() {
+class Home extends React.Component {
 
-	const firebaseApp = initializeApp({
-		apiKey: 'AIzaSyBiuTVcsuig3gX8xVFOAOPso5FPKotRrFg',
-		authDomain: 'passive-1642.firebaseapp.com',
-		databaseURL: 'https://passive-1642-default-rtdb.firebaseio.com',
-		projectId: 'passive-1642'
-	});
-    const db = getDatabase(firebaseApp);
+	constructor() {
+		super();
+		this.state = {
+			showPopup: false,
+			showWaitlistPopup: false,
+			errorMessage: "",
+			tags: ['art', 'cooking', 'sales', 'electronics', 'movies', 'fashion', 'home', 'sports', 'outdoors', 'books', 'travel', 'music', 'pets', 'family'],
+			waitlistTags: ['rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)'],
+			age: null,
+			gender: null,
+			zip: null,
+			filtered_email: "",
+		}
 
-	function signUp(email) {
-		let filtered_email = email.split('.').join('').split('#').join('').split('$').join('').split('[').join('').split(']').join('');
-		if (email != "" && email != null) {
-			var date = new Date();
-			set(ref(db, 'emails/' + filtered_email), {
-				email: email,
-				date: date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " @ " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
-			});
-			document.getElementById("signup_button").style.opacity = 0;
-			document.getElementById("signup").style.opacity = 0;
-			document.getElementById("signup_thanks").style.opacity = 1;
+		this.submitModal = this.submitModal.bind(this);
+		this.switchToSignIn = this.switchToSignIn.bind(this);
+		this.switchToSignUp = this.switchToSignUp.bind(this);
+	}
+
+	signUp(email) {
+		if (email != "" && email != null && email.includes("@")) {
+			document.getElementById("header_input").style.borderBottomColor = 'white';
+			this.setState({ showWaitlistPopup: true, filtered_email: email.split('.').join('').split('#').join('').split('$').join('').split('[').join('').split(']').join(''), email: email });
+		} else {
+			document.getElementById("header_input").style.borderBottomColor = 'red';
 		}
 	}
 
-    function contact(email, message) {
+    contact(email, message) {
 		let filtered_email = email.split('.').join('').split('#').join('').split('$').join('').split('[').join('').split(']').join('');
 		if (email != "" && email != null) {
 			set(ref(db, 'contacts/' + filtered_email), {
@@ -40,6 +51,52 @@ export default function Home() {
 		}
 	}
 
+	submitModal() {
+		let userTags = [];
+		for (let i in this.state.tags) {
+			if (this.state.waitlistTags[i] != 'rgb(240, 240, 240)') {
+				userTags.push(this.state.tags[i])
+			}
+		}
+		console.log(this.state.filtered_email)
+		if (this.state.filtered_email != "") {
+			var date = new Date();
+			set(ref(db, 'emails/' + this.state.filtered_email), {
+				age: this.state.age,
+				gender: this.state.gender,
+				zip: this.state.zip,
+				tags: userTags,
+				email: this.state.email,
+				date: date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " @ " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
+			}).then(() => {
+				this.setState({ showWaitlistPopup: false });
+				document.getElementById("header_button").style.opacity = 0;
+				document.getElementById("header_button").disabled = true;
+				document.getElementById("header_input").style.opacity = 0;
+				document.getElementById("signup_thanks").style.opacity = 1;
+			});
+		}
+	}
+
+	selectNewTag(tag, i) {
+		let tempTags = this.state.waitlistTags;
+		tempTags[i] = tempTags[i] == '#9DC3E6' ? 'rgb(240, 240, 240)' : '#9DC3E6';
+		this.setState({ waitlistTags: tempTags });
+	}
+
+	switchToSignIn() {
+		document.getElementById("hr_underline").style.marginLeft = "0%";
+		document.getElementById("modal_signup").style.display = "none";
+		this.setState({ errorMessage: "" });
+	}
+
+	switchToSignUp() {
+		document.getElementById("hr_underline").style.marginLeft = "50%";
+		document.getElementById("modal_signup").style.display = "block";
+		this.setState({ errorMessage: "" });
+	}
+
+	render() {
   	return (
 		<div>
 			<Head>
@@ -55,17 +112,21 @@ export default function Home() {
 					</div> 
 					<img src="/passive.png" />
 				</div>
-
+			
 				<div className={styles.header}>
 					<h1>Passive</h1>
-					<h2>The future of mobile ads</h2>
+					<Link href="/advertisers">
+						<p>advertisers</p>
+					</Link>
+					<img src="/advertisers.png" />
+					<h2>The future of advertising</h2>
 					<hr />
 					<div className={styles.signup}>
-						<input type="text" placeholder="Join our mailing list to stay up to date" id="signup"></input>
-						<button onClick={() => signUp(document.getElementById("signup").value)} id="signup_button">Sign Up</button>
+						<input type="text" placeholder="Join our mailing list for a $1 bonus!" id="header_input" />
+						<button onClick={() => this.signUp(document.getElementById("header_input").value)} id="header_button">Sign Up</button>
 						<p id="signup_thanks">Thank you!</p>
 					</div>
-					<p><i>We'll give you a $1 bonus when we launch! (promise no spam)</i></p>
+					<p><i>We'll let you know when we launch, promise no spam</i></p>
 				</div>
 
 				<div className={styles.details}>
@@ -98,8 +159,8 @@ export default function Home() {
 				<div className={styles.contact}>
 					<p>Contact Us</p>
 					<div className={styles.signup}>
-						<input type="text" placeholder="Email*" id="email"></input>
-						<button onClick={() => contact(document.getElementById("email").value, document.getElementById("message").value)} id="send_button">Send</button>
+						<input type="text" placeholder="Email*" id="contact_input"></input>
+						<button onClick={() => contact(document.getElementById("contact_input").value, document.getElementById("message").value)} id="send_button">Send</button>
 						<textarea placeholder="Message" id="message"></textarea>
 					</div>
 				</div>
@@ -107,8 +168,76 @@ export default function Home() {
 				<div className={styles.footer}>
 					<p>Contact us at passiveapp@gmail.com</p>
 				</div>
-				
 			</main>
-			</div>
-	)
+
+			<Modal show={this.state.showWaitlistPopup} onHide={() => this.setState({ showWaitlistPopup: false })}>
+				<Modal.Header closeButton style={{border: 'none'}}>
+					<Modal.Title style={{fontSize: '20px', lineHeight: '1.2', fontWeight: 'bold'}}>Waitlist Sign Up</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<div className={styles.waitlist}>
+						<p><b>Please fill in all fields to secure your $1 balance</b></p>
+						<p>This information will only be tied to your email and nothing more than what you input will be collected.</p>
+						<div>
+							<p><b>Age</b></p>
+							<div onChange={e => this.setState({ age: e.target.value })}>
+								<label className={styles.container}>less than 20
+									<input type="radio" name="age" value="<20" /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>20s
+									<input type="radio" name="age" value="20s" /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>30s
+									<input type="radio" name="age" value="30s" /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>40s
+									<input type="radio" name="age" value="40s" /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>greater than 50
+									<input type="radio" name="age" value=">50" /><span className={styles.checkmark}></span>
+								</label>
+							</div>
+						</div>
+						<div>
+							<p><b>Gender</b></p>
+							<div onChange={e => this.setState({ gender: e.target.value })}>
+								<label className={styles.container}>Male
+									<input type="radio" name="gender" value="male" /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>Female
+									<input type="radio" name="gender" value="female" /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>Other
+									<input type="radio" name="gender" value="other" /><span className={styles.checkmark}></span>
+								</label>
+							</div>
+						</div>
+						<div>
+							<p><b>Interests</b></p>
+							<div style={{overflow: 'hidden'}}>
+								{this.state.tags.map((tag, i) => {
+									return (
+										<div key={i} className={styles.tag} onClick={() => this.selectNewTag(tag, i)} style={{backgroundColor: this.state.waitlistTags[i]}}>
+											<p>{tag}</p>
+										</div>
+									)
+								})}
+							</div>
+						</div>
+						<div onChange={e => this.setState({ zip: e.target.value })}>
+							<p><b>Zip Code</b></p>
+							<input type="number" placeholder="00000" id="zipcode" />
+						</div>
+						<div>
+							<button onClick={this.submitModal}>Submit</button>
+							<button onClick={() => this.setState({ showWaitlistPopup: false })}>Close</button>
+						</div>
+					</div>
+				</Modal.Body>
+			</Modal>
+
+		</div>
+	)}
 }
+
+export default withRouter(Home);

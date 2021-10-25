@@ -17,9 +17,14 @@ div.header > h1 {
   padding-top: 5px;
 }
 
+div.header > h1:hover {
+  cursor: pointer;
+}
+
 div.header > h2 {
   text-align: center;
   font-size: 5vw;
+  line-height: 1.4;
   font-weight: bold;
   background: -webkit-linear-gradient(45deg, #9DC3E6, #A9D18E);
   background: linear-gradient(45deg, #9DC3E6, #A9D18E);
@@ -30,7 +35,33 @@ div.header > h2 {
   margin-bottom: 40px;
 }
 
-div.header > p {
+div.header > img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 70px;
+  z-index: 0;
+}
+
+div.header > p:first-of-type {
+  position: absolute;
+  font-size: 22px;
+  font-weight: bold;
+  top: 0;
+  line-height: 55px;
+  right: 53px;
+  margin: 0 0;
+  border: none;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+div.header > p:first-of-type:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+div.header > p:last-of-type {
   text-align: center;
   color:rgb(180, 180, 180);
   font-size: 18px;
@@ -151,6 +182,7 @@ div.details > div {
   color: white;
   font-size: 18px;
   margin-top: 15vh;
+  box-shadow: black 0px 0px 20px -2px;
 }
 
 div.details > div:nth-of-type(1) {
@@ -286,6 +318,166 @@ div.footer > p {
   vertical-align: middle;
 }
 
+.waitlist {
+  padding: 0 20px;
+}
+
+div.waitlist > p {
+  text-align: center;
+}
+
+div.waitlist > p:first-of-type {
+  margin-bottom: 5px;
+}
+
+div.waitlist > p:last-of-type {
+  font-size: 13px;
+}
+
+div.waitlist > div > div {
+  width: 90%;
+  margin: 0 5%;
+  margin-bottom: 20px;
+}
+
+div.waitlist > div > input[type="number"] {
+  border: none;
+  border-bottom: 2px solid black;
+  width: 86%;
+  margin: 20px 7%;
+}
+
+div.waitlist > div > button:first-of-type {
+  color: black;
+  background: -webkit-linear-gradient(45deg, #A9D18E, #9DC3E6);
+  background: linear-gradient(45deg, #A9D18E, #9DC3E6);
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 4px;
+  margin: 20px 30px;
+  margin-right: 5px;
+  border: none;
+  width: 150px;
+  height: 50px;
+  float: left;
+}
+
+div.waitlist > div > button:last-of-type {
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+  width: 150px;
+  height: 50px;
+  border: solid 3px transparent;
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), linear-gradient(45deg, #A9D18E, #9DC3E6);;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 2px 1000px 1px #fff inset;
+  float: right;
+  margin: 20px 30px;
+  margin-left: 5px;
+}
+
+.tag {
+  border-radius: 50px;
+  padding: 5px 10px;
+  margin: 5px 5px;
+  float: left;
+}
+
+.tag:hover {
+  cursor: pointer;
+  background-color: #ccc !important;
+}
+
+div.tag > p {
+  margin-bottom: 3px;
+}
+
+/* div.waitlist > div > input[type=radio] {
+  margin: 10px 5px 10px 20px;
+}
+
+div.waitlist > div > span {
+  white-space: nowrap;
+  margin: 0 20px;
+}
+
+div.waitlist > div > span {
+  white-space: nowrap;
+  margin: 0 20px;
+} */
+
+
+/* Customize the label (the container) */
+.container {
+  display: inline-block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  margin-right: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 2.5px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #9DC3E6;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+/* .container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+} */
+
 @media only screen and (max-width: 1050px) {
 
   div.header > h1 {
@@ -379,7 +571,6 @@ div.footer > p {
 }
 
 @media only screen and (max-width: 768px) {
-
   .details {
     height: 80vh;
     min-height: 1000px;
@@ -483,8 +674,19 @@ div.footer > p {
     margin: 10px 0;
   }
 
-  div.header > p {
+  div.header > p:last-of-type {
     display: none
+  }
+
+  div.header > p:first-of-type {
+    font-size: 16px;
+    top: 0px;
+    line-height: 40px;
+    right: 40px;
+  }
+
+  div.header > img {
+    height: 50px;
   }
 
   div.contact > div {
@@ -496,6 +698,16 @@ div.footer > p {
   div.contact > p {
     margin-left: 20px;
     margin-bottom: 20px;
+  }
+
+  div.waitlist > div > button:last-of-type {
+    width: 100px;
+    margin-right: 10px;
+  }
+
+  div.waitlist > div > button:first-of-type {
+    width: 100px;
+    margin-left: 10px;
   }
 
 }

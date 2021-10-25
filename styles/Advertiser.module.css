@@ -1,0 +1,330 @@
+.header {
+    margin: 40px 50px;
+    margin-bottom: 0;
+    float: left;
+}
+
+div.header > p {
+    margin: 5px 0;
+}
+
+.newCampaign {
+    float: right;
+}
+
+div.newCampaign > button {
+    color: black;
+    background: -webkit-linear-gradient(45deg, #9DC3E6, #A9D18E);
+    background: linear-gradient(45deg, #9DC3E6, #A9D18E);
+    font-weight: bold;
+    font-size: 17px;
+    border-radius: 4px;
+    margin-right: 50px;
+    margin-top: 50px;
+    border: none;
+    width: 250px;
+    height: 50px;
+}
+
+div.newCampaign > a {
+    color: black;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-right: 50px;
+    display: block;
+    text-align: center;
+}
+
+.active {
+    margin: 0 50px;
+}
+
+div.active > p {
+    font-size: 2em;
+    margin-bottom: 50px;
+}
+
+div.active > div > p {
+    text-align: center;
+    color: grey;
+    line-height: 60vh;
+    margin: 0;
+}
+
+.campaign {
+    width: 100%;
+    max-width: 1200px;
+    border-radius: 16px;
+    margin: 40px auto;
+    box-shadow: 0px 0px 20px -8px;
+}
+
+.campaign_main {
+    width: 25%;
+    height: 200px;
+    float: left;
+    font-size: 18px;
+    border-right: 2px solid rgb(220, 220, 220);
+    border-bottom: 2px solid rgb(220, 220, 220);
+}
+
+.campaign_name {
+    height: 99px;
+    padding: 15px 20px;
+    font-size: 18px;
+}
+
+.campaign_created {
+    height: 99px;
+    padding: 15px 20px;
+    font-size: 18px;
+    border-top: 2px solid rgb(220, 220, 220);
+}
+
+.campaign_stats {
+    background-color: rgb(245, 245, 245);
+    width: 25%;
+    height: 200px;
+    float: left;
+    padding: 15px 20px;
+    font-size: 18px;
+    border-right: 2px solid rgb(220, 220, 220);
+    border-bottom: 2px solid rgb(220, 220, 220);
+}
+
+div.campaign_stats > p:first-of-type {
+    margin-bottom: 35px;
+}
+
+#clicks {
+    padding-left: 38px;
+}
+
+#conversions {
+    padding-left: 40px;
+}
+
+.campaign_tags {
+    width: 50%;
+    height: 200px;
+    float: left;
+    padding: 15px 20px;
+    font-size: 18px;
+    border-bottom: 2px solid rgb(220, 220, 220);
+}
+
+div.campaign_tags > p:first-of-type {
+    margin-bottom: 20px;
+}
+
+.campaign_link {
+    width: calc(100% - 200px);
+    height: 60px;
+    float: left;
+    font-size: 18px;
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 55px;
+    border-right: 2px solid rgb(220, 220, 220);
+}
+
+div.campaign_link > p {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.campaign_delete {
+    width: 200px;
+    float: left;
+}
+
+div.campaign_delete > button {
+    color: black;
+    /* background: -webkit-linear-gradient(45deg, #9DC3E6, #A9D18E);
+    background: linear-gradient(45deg, #9DC3E6, #A9D18E); */
+    background-color: rgb(250, 150, 150);
+    font-weight: bold;
+    font-size: 17px;
+    border-radius: 4px;
+    margin-left: 25px;
+    margin-top: 10px;
+    border: none;
+    width: 150px;
+    height: 40px;
+}
+
+.campaign_box_header {
+    margin-bottom: 9px;
+}
+
+.campaign_box_text {
+    font-size: 16px;
+    padding-left: 20px;
+}
+
+.tag {
+    border-radius: 50px;
+    padding: 5px 10px;
+    margin: 5px 5px;
+    float: left;
+}
+
+.tag:hover {
+    cursor: pointer;
+}
+
+div.tag > p {
+    margin-bottom: 3px;
+}
+
+div.newCampaignModal > input[type=text] {
+    border: none;
+    border-bottom: 2px solid black;
+    width: 80%;
+    margin: 20px 7%;
+}
+
+div.newCampaignModal > p {
+    width: 80%;
+    margin: 20px 7%;
+}
+
+div.newCampaignModal > div {
+    overflow: hidden;
+    width: 80%;
+    margin: 20px 7%;
+}
+
+@media only screen and (max-width: 1294px) {
+    div.campaign_tags > p:first-of-type {
+        margin-bottom: 8px;
+    }
+}
+
+@media only screen and (max-width: 1142px) {
+    div.campaign_stats > p:first-of-type {
+        margin-bottom: 5px;
+    }
+    #clicks {
+        padding-left: 0;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 0px;
+    }
+    #conversions {
+        padding-left: 0;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 0px;
+    }
+}
+
+@media only screen and (max-width: 990px) {
+    .campaign_created {
+        height: 149px;
+    }
+    div.campaign_created > p:first-of-type {
+        margin-bottom: 22px;
+    }
+    .campaign_tags {
+        height: 250px;
+    }
+    .campaign_main {
+        height: 250px;
+    }
+    .campaign_stats {
+        height: 250px;
+    }
+    div.campaign_stats > p:first-of-type {
+        margin-bottom: 25px;
+    }
+    #time {
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 831px) {
+    .campaign_tags {
+        width: 100%;
+        height: auto;
+    }
+    .campaign_main {
+        width: 50%;
+        height: 250px;
+    }
+    .campaign_stats {
+        width: 50%;
+        height: 250px;
+        border-right: none;
+        border-top-right-radius: 16px;
+    }
+    #time {
+        display: inline-block;
+    }
+}
+
+@media only screen and (max-width: 528px) {
+    .header {
+        margin: 20px 50px;
+        margin-bottom: 0;
+        float: none;
+        text-align: center;
+    }
+    div.header > p {
+        margin: 0 0;
+    }
+    .newCampaign {
+        float: none;
+        text-align: center;
+    }
+    div.newCampaign > button {
+        margin-right: 0px;
+        margin-top: 20px;
+    }
+    div.newCampaign > a {
+        margin-right: 0px;
+    }
+    #time {
+        display: block;
+    }
+    .campaign_link {
+        width: calc(100% - 100px);
+    }
+    .campaign_delete {
+        width: 100px;
+    }
+    div.campaign_delete > button {
+        margin-left: 10px;
+        margin-top: 10px;
+        width: 80px;
+        height: 40px;
+    }
+}
+
+@media only screen and (max-width: 425px) {
+    .campaign_box_text {
+        font-size: 14px;
+        padding-left: 0px;
+        text-align: center;
+    }
+    .campaign_link {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid rgb(220, 220, 220);
+    }
+    .campaign_delete {
+        width: 100%;
+    }
+    div.campaign_delete > button {
+        margin-left: 10%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 80%;
+        height: 40px;
+    }
+    .active {
+        margin: 0 20px;
+    }
+}
