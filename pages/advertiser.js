@@ -26,7 +26,16 @@ class Advertiser extends React.Component {
 			leftImage: null,
 			rightImage: null,
 			tags: ['art', 'cooking', 'sales', 'electronics', 'movies', 'fashion', 'home', 'sports', 'outdoors', 'books', 'travel', 'music', 'pets', 'family'],
-			newCampaignTags: ['rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)', 'rgb(220, 220, 220)']
+			newCampaignTags: ['rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)', 'rgb(240, 240, 240)'],
+			regions: {
+				"usa": false,
+				"west": false,
+				"midwest": false,
+				"southwest": false,
+				"southeast": false,
+				"northeast": false,
+				"coordinate": false
+			}
 		}
 
 		console.log(props.router);
@@ -41,6 +50,7 @@ class Advertiser extends React.Component {
 
 		this.initUser = this.initUser.bind(this);
 		this.submitModal = this.submitModal.bind(this);
+		this.setRegion = this.setRegion.bind(this);
 	}
 
 	initUser(user) {
@@ -105,7 +115,7 @@ class Advertiser extends React.Component {
 
 	selectNewTag(tag, i) {
 		let tempTags = this.state.newCampaignTags;
-		tempTags[i] = tempTags[i] == '#9DC3E6' ? 'rgb(220, 220, 220)' : '#9DC3E6';
+		tempTags[i] = tempTags[i] == '#9DC3E6' ? 'rgb(240, 240, 240)' : '#9DC3E6';
 		this.setState({ newCampaignTags: tempTags });
 	}
 
@@ -122,14 +132,30 @@ class Advertiser extends React.Component {
 		let campaignLink = document.getElementById("campaign_link").value;
 		var date = new Date();
 		let campaignTags = [];
+		let campaignRegion = [];
 		for (let i in this.state.tags) {
-			if (this.state.newCampaignTags[i] != 'rgb(220, 220, 220)') {
+			if (this.state.newCampaignTags[i] != 'rgb(240, 240, 240)') {
 				campaignTags.push(this.state.tags[i])
 			}
 		}
+		if (this.state.regions.usa) {
+			campaignRegion = ["usa"];
+		} else if (this.state.regions.coordinate) {
+			campaignRegion.push(document.getElementById("campaign_region").value);
+		} else {
+			campaignRegion = [this.state.regions.west ? "west" : null, this.state.regions.midwest ? "midwest" : null, this.state.regions.southwest ? "southwest" : null, this.state.regions.souteast ? "southeast" : null, this.state.regions.northeast ? "northeast" : null]
+		}
+		if (campaignRegion == [] || campaignTags == [] || campaignName == "" || campaignLink == "") {
+			alert("Please fill out all fields");
+			return;
+		}
+		console.log(campaignName)
+		console.log(campaignLink)
+		console.log(campaignRegion)
+		console.log(campaignTags)
 		let storage = getStorage();
-		const rightStorageRef = st_ref(storage, 'rightImage');
-		const leftStorageRef = st_ref(storage, 'leftImage');
+		const rightStorageRef = st_ref(storage, this.state.user.displayName + "_" + campaignName + "_right");
+		const leftStorageRef = st_ref(storage, this.state.user.displayName + "_" + campaignName + "_left");
 		uploadBytes(rightStorageRef, this.state.rightImage).then((snapshot) => {
 			uploadBytes(leftStorageRef, this.state.leftImage).then((snapshot) => {
 				console.log('Uploaded files');
@@ -144,7 +170,7 @@ class Advertiser extends React.Component {
 							conversions: 0,
 							created: date.getDate() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " @ " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds(),
 							link: campaignLink,
-							region: ["usa"],
+							region: campaignRegion,
 							shares: 0,
 							src: leftUrl,
 							src_f: rightUrl,
@@ -165,8 +191,8 @@ class Advertiser extends React.Component {
 
 	deleteCampaign (campaignName) {
 		let storage = getStorage();
-		const rightStorageRef = st_ref(storage, 'rightImage');
-		const leftStorageRef = st_ref(storage, 'leftImage');
+		const rightStorageRef = st_ref(storage, this.state.user.displayName + "_" + campaignName + "_right");
+		const leftStorageRef = st_ref(storage, this.state.user.displayName + "_" + campaignName + "_left");
 		deleteObject(rightStorageRef).then((snapshot) => {
 			deleteObject(leftStorageRef).then((snapshot) => {
 				console.log('Deleted files');
@@ -178,6 +204,31 @@ class Advertiser extends React.Component {
 				console.log("DELETE FAILED: " + error);
 			});
 		});
+	}
+
+	setRegion(val) {
+		let temp = this.state.regions;
+		if (val == "coordinate" && !temp[val]) {
+			temp["usa"] = false;
+			temp["west"] = false;
+			temp["midwest"] = false;
+			temp["southwest"] = false;
+			temp["southeast"] = false;
+			temp["northeast"] = false;
+		} else if (val == "usa" && !temp[val]) {
+			temp["west"] = false;
+			temp["midwest"] = false;
+			temp["southwest"] = false;
+			temp["southeast"] = false;
+			temp["northeast"] = false;
+			temp["coordinate"] = false;
+		} else if (val != "coordinate" && temp["coordinate"]) {
+			temp["coordinate"] = false;
+		} else if (val != "usa" && temp["usa"]) {
+			temp["usa"] = false;
+		}
+		temp[val] = !temp[val];
+		this.setState({ regions: temp });
 	}
 
 	render() {
@@ -237,12 +288,15 @@ class Advertiser extends React.Component {
 												<div className={adStyles.campaign_box_text}>
 													{this.state.tags.map((tag, i) => {
 														return (
-															<div key={i} className={adStyles.tag} style={{backgroundColor: el[1].tags.includes(tag) ? '#9DC3E6' : 'rgb(220, 220, 220)'}}>
+															<div key={i} className={adStyles.tag} style={{backgroundColor: el[1].tags.includes(tag) ? '#9DC3E6' : 'rgb(240, 240, 240)'}}>
 																<p>{tag}</p>
 															</div>
 														)
 													})}
 												</div>
+											</div>
+											<div className={adStyles.campaign_region}>
+												<p><b>Region: </b>{el[1].region.join(", ")}</p>
 											</div>
 											<div className={adStyles.campaign_link}>
 												<p><b>Link: </b><a href={el[1].link} target="_blank" style={{color: 'black'}}>{el[1].link}</a></p>
@@ -307,6 +361,33 @@ class Advertiser extends React.Component {
 						<div className={adStyles.newCampaignModal} id="signin">
 							<input type="text" placeholder="Name" id="campaign_name" />
 							<input type="text" placeholder="Link" id="campaign_link" />
+							<p><b>Regions:</b></p>
+							<div>
+								<label className={styles.container}>USA
+									<input type="checkbox" value="USA" checked={this.state.regions.usa} onChange={() => this.setRegion("usa")} /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>West
+									<input type="checkbox" value="West" checked={this.state.regions.west} onChange={() => this.setRegion("west")} /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>Midwest
+									<input type="checkbox" value="Midwest" checked={this.state.regions.midwest} onChange={() => this.setRegion("midwest")} /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>Southwest
+									<input type="checkbox" value="Southwest" checked={this.state.regions.southwest} onChange={() => this.setRegion("southwest")} /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>Southeast
+									<input type="checkbox" value="Southeast" checked={this.state.regions.southeast} onChange={() => this.setRegion("southeast")} /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>Northeast
+									<input type="checkbox" value="Northeast" checked={this.state.regions.northeast} onChange={() => this.setRegion("northeast")} /><span className={styles.checkmark}></span>
+								</label>
+								<label className={styles.container}>Coordinate
+									<input type="checkbox" value="Coordinate" checked={this.state.regions.coordinate} onChange={() => this.setRegion("coordinate")} /><span className={styles.checkmark}></span>
+								</label>
+							</div>
+							{ this.state.regions.coordinate ?
+								<input type="text" placeholder="Latitude, Longitude" id="campaign_region" />
+							: null }
 							<p><b>Tags:</b></p>
 							<div>
 								{this.state.tags.map((tag, i) => {

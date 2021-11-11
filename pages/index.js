@@ -126,7 +126,7 @@ class Home extends React.Component {
 						<button onClick={() => this.signUp(document.getElementById("header_input").value)} id="header_button">Sign Up</button>
 						<p id="signup_thanks">Thank you!</p>
 					</div>
-					<p><i>We'll let you know when we launch, promise no spam</i></p>
+					<p><i>We'll let you know when we launch (promise no spam)</i></p>
 				</div>
 
 				<div className={styles.details}>

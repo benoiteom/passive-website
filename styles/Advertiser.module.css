@@ -117,8 +117,26 @@ div.campaign_tags > p:first-of-type {
     margin-bottom: 20px;
 }
 
+.campaign_region {
+    width: calc((100% - 200px) / 2);
+    height: 60px;
+    float: left;
+    font-size: 18px;
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 55px;
+    border-right: 2px solid rgb(220, 220, 220);
+}
+
+div.campaign_region > p {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .campaign_link {
-    width: calc(100% - 200px);
+    width: calc((100% - 200px) / 2);
     height: 60px;
     float: left;
     font-size: 18px;
@@ -259,6 +277,14 @@ div.newCampaignModal > div {
         height: 250px;
         border-right: none;
         border-top-right-radius: 16px;
+    }
+    .campaign_region {
+        width: calc(100%);
+        border-bottom: 2px solid rgb(220, 220, 220);
+        border-right: none;
+    }
+    .campaign_link {
+        width: calc(100% - 200px);
     }
     #time {
         display: inline-block;
