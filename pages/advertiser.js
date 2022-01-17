@@ -299,7 +299,7 @@ class Advertiser extends React.Component {
 												<p><b>Region: </b>{el[1].region.join(", ")}</p>
 											</div>
 											<div className={adStyles.campaign_link}>
-												<p><b>Link: </b><a href={el[1].link} target="_blank" style={{color: 'black'}}>{el[1].link}</a></p>
+												<p><b>Link: </b><a href={el[1].link} target="_blank" rel="noreferrer" style={{color: 'black'}}>{el[1].link}</a></p>
 											</div>
 											<div className={adStyles.campaign_delete}>
 												<button onClick={() => this.deleteCampaign(el[0])}>Delete</button>
