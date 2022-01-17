@@ -126,7 +126,7 @@ class Home extends React.Component {
 						<button onClick={() => this.signUp(document.getElementById("header_input").value)} id="header_button">Sign Up</button>
 						<p id="signup_thanks">Thank you!</p>
 					</div>
-					<p><i>We'll let you know when we launch (promise no spam)</i></p>
+					<p><i>We&apos;ll let you know when we launch (promise no spam)</i></p>
 				</div>
 
 				<div className={styles.details}>
@@ -143,7 +143,7 @@ class Home extends React.Component {
 					</div>
 					<div>
 						<h3><b>advertisers</b></h3>
-						<p>Place your ads directly on users' phone screens</p>
+						<p>Place your ads directly on users&apos; phone screens</p>
 						<ul>
 							<li>Sign up</li>
 							<li>Work with us to design your ads</li>
